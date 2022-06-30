@@ -1,163 +1,190 @@
 <template>
-  <div class="container">
-    <div class="tap">
-      <h3><strong>My Page</strong></h3>
-      <router-link to="/mypage/info" class="link-dark" id="link"
-        >내 정보</router-link
-      >
-      <router-link to="/mypage/post" class="link-dark" id="link"
-        >내 글 모아보기</router-link
-      >
-      <router-link to="/mypage/apply" class="link-dark" id="link"
-        >스터디 & 프로젝트 신청내역</router-link
-      >
-      <router-link to="/mypage/pay" class="link-dark" id="link"
-        >결제내역</router-link
-      >
-      <router-link to="/mypage/mento" class="link-dark" id="link"
-        >멘토의 메뉴</router-link
-      >
-    </div>
-    <div class="info">
-      <h1>내 정보</h1>
-      <span>
-        <img
-          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-          alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-          style="width: 110px; height: auto"
-          class="rounded float-start" />
-        <h3 class="info1">자기소개</h3>
-        <p class="info1">
-          <textarea
-            name=""
-            id=""
-            cols="60"
-            rows="2"
-            v-model="user.selfInfo"
-            :placeholder="this.selfInfo">
-          </textarea>
-        </p>
-      </span>
-      <span
-        ><button
-          type="button"
-          class="btn btn-outline-primary"
-          @click="changeNickname"
-          style="position: relative; left: 10px">
-          *{{ user.nickname }}
-        </button>
-        <strong class="info2"
-          >팀원 평판 {{ user.score }}({{ user.scoreCount }})</strong
-        >
-        <strong class="info2">
-          멘토 평판{{ user.mentoScore }}({{ user.mentoScoreCount }})</strong
-        >
-      </span>
-    </div>
-    <div class="blank"></div>
-    <div class="category">
-      <div>
-        로그인 계정<span>{{ user.login }}</span>
-      </div>
-      <div>
-        관심 분야
-        <div>
-          <div class="under">
-            <select
-              name=""
-              id=""
-              v-model="selectedOptionList"
-              class="form-select"
-              multiple>
-              <option
-                :value="option.name"
-                v-for="option in options"
-                :key="option.optionCode">
-                {{ option.name }}
-              </option>
-            </select>
+  <div class="container mt-5">
+    <div class="row">
+      <!-- 페이지우측  -->
+      <div class="col text-start">
+        <div class="content text-start">
+          <!-- 글 제목 -->
+          <div class="h1"><strong>내 정보</strong></div>
+          <hr />
+          <!-- 글 내용 상단 -->
+          <div class="row mt-4">
+            <div class="col-2 text-center">
+              <img
+                src="../assets/profile.jpg"
+                alt=""
+                style="width: 130px; border-radius: 15px" />
+            </div>
+            <div class="col-10">
+              <p class="h2">자기소개</p>
+              <p v-show="editStatus">
+                {{ user.selfInfo }}
+              </p>
+              <p v-show="infoStatus">
+                <textarea
+                  class="form-control text-muted"
+                  id="exampleFormControlTextarea1"
+                  rows="3"
+                  v-model="user.selfInfo"></textarea>
+              </p>
+            </div>
           </div>
-          <div class="under">
-            <button
-              type="button"
-              class="btn btn-primary"
-              v-for="(option, index) in selectedOptionList"
-              :key="option">
-              {{ selectedOptionList[index] }}
-            </button>
+          <div class="mt-3" style="height: 30px">
+            <p class="row" style="vertical-align: middle">
+              <span class="col-2 text-center"
+                ><strong>{{ user.nickname }}</strong></span
+              >|
+              <span class="col-2 text-center"><strong>팀원평판</strong></span>
+              <span class="col-2 text-start">
+                <i class="bi bi-star-fill pro_star_color"></i
+                >{{ user.score }}/({{ user.scoreCount }}) </span
+              >|
+              <span class="col-2 text-center"><strong>멘토평판</strong></span>
+              <span class="col-2 text-start"
+                ><i class="bi bi-star-fill pro_star_color"></i
+                >{{ user.mentoScore }}/({{ user.mentoScoreCount }})</span
+              >
+            </p>
+            <hr />
           </div>
-        </div>
-      </div>
-      <div>
-        관심 스택
-        <div class="under">
-          <div>
-            <select
-              name=""
-              id=""
-              @change="addStack"
-              v-model="selectedStackList"
-              class="form-select">
-              <option
-                :value="stack.stackCode"
-                v-for="stack in stacks"
-                :key="stack.stackCode">
-                {{ stack.label }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <select name="" id="" multiple class="form-select" size="3">
-              <option
-                value=""
-                v-for="stack in selectedStackOption"
-                :key="stack.stackCode">
-                {{ stack.options.join(" ") }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div>
-        소셜 정보
-        <div>
-          <span
-            ><div class="row g-3">
-              <div class="col-sm-4" id="padding">
+          <!-- 글 내용 하단 -->
+          <div class="h5 py-3">
+            <p class="row py-4 mb-5 mt-5">
+              <span class="col-2 text-center"
+                ><strong>로그인 계정</strong></span
+              >
+              <span class="col-10 text-start px-4">{{
+                user.googleAccount
+              }}</span>
+            </p>
+            <p class="row py-4 mb-4">
+              <span class="col-2 text-center"><strong>관심분야</strong></span>
+              <span class="col-10 px-3"
+                ><button
+                  type="button"
+                  class="btn btn-primary m-1 mt-0"
+                  v-for="(option, index) in selectedOptionList"
+                  :key="option"
+                  v-show="editStatus">
+                  {{ selectedOptionList[index] }}
+                </button>
+                <select
+                  v-model="selectedOptionList"
+                  class="form-select"
+                  aria-label="options"
+                  multiple
+                  v-show="infoStatus">
+                  <option
+                    :value="option.name"
+                    v-for="option in options"
+                    :key="option.optionCode">
+                    {{ option.name }}
+                  </option>
+                </select>
+              </span>
+            </p>
+            <p class="row py-4 mb-4">
+              <span class="col-2 text-center"><strong>관심 스택</strong></span>
+              <span class="col-5 px-3">
+                <span
+                  ><button
+                    class="btn btn-primary m-1 mt-0"
+                    v-for="stack in stackList"
+                    :key="stack"
+                    v-show="editStatus">
+                    {{ stack }}
+                  </button></span
+                >
+
+                <select
+                  class="form-select"
+                  name=""
+                  id=""
+                  v-model="selectedPart"
+                  @change="addStack"
+                  v-show="infoStatus">
+                  <option
+                    :value="part.partCode"
+                    v-for="part in partList"
+                    :key="part.partCode">
+                    {{ part.partName }}
+                  </option>
+                </select>
+              </span>
+              <span class="col-5 px-3">
+                <select
+                  class="form-select"
+                  name=""
+                  id=""
+                  v-model="stackList"
+                  size="3"
+                  multiple
+                  v-show="infoStatus">
+                  <option
+                    :value="stack.stackName"
+                    v-for="stack in selectedStackList"
+                    :key="stack">
+                    {{ stack.stackName }}
+                  </option>
+                </select>
+              </span>
+            </p>
+            <p class="row py-4 mb-5">
+              <span class="col-2 text-center"><strong>소셜정보</strong></span>
+              <span class="col-10 px-4" v-show="editStatus">
+                <!-- <a
+                  class="px-2"
+                  :href="siteList[2 * index + 1]"
+                  v-for="(site, index) in siteList"
+                  :key="site">
+                  {{ siteList[index * 2] }}</a
+                > -->
+                <a
+                  class="m-1 mt-0"
+                  :href="site.href"
+                  v-for="site in siteList"
+                  :key="site.href"
+                  >{{ site.name }}</a
+                >
+              </span>
+              <span class="col-4 px-3 pt-0" v-show="infoStatus">
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control text-start"
                   placeholder="사이트 제목을 입력해주세요!"
-                  aria-label="SiteName"
-                  v-model="this.siteName" />
-              </div>
-              <div class="col-sm-6" id="padding">
+                  name=""
+                  id="" />
+              </span>
+              <span class="col-5 px-2 pt-0" v-show="infoStatus">
                 <input
                   type="url"
-                  class="form-control"
+                  class="form-control text-start"
                   placeholder="사이트 링크를 입력해주세요!"
-                  aria-label="SiteLink"
-                  v-model="this.siteLink" />
-              </div>
-              <div class="col-sm">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  @click="addSite"
-                  id="padding">
+                  name=""
+                  id="" />
+              </span>
+              <span class="col-1 text-center">
+                <button type="button" class="btn btn-outline-primary px-4">
                   +
                 </button>
-              </div>
-              <div class="row g-3" id="padding">
-                <a :href="this.siteLink" class="col-sm-4">
-                  {{ this.siteName }}</a
-                >
-                <a :href="this.siteLink" class="col-sm-6">
-                  {{ this.siteLink }}</a
-                >
-              </div>
-            </div>
-          </span>
+              </span>
+            </p>
+            <hr />
+            <p class="text-end">
+              <button
+                type="button"
+                class="btn btn-primary btn-lg"
+                v-show="infoStatus">
+                {{ this.buttonStatus }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-lg"
+                v-show="editStatus">
+                {{ this.buttonStatus }}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -177,14 +204,8 @@ export default {
         mentoScoreCount: 9,
         login: "joans.dev@gmail.com",
         selfInfo:
-          "현재 재직 중이시라면 맡고 계신 업무를 간략히 소개해주세요 :)",
-        googleAccount: "joans.dev@gmail.com",
-        social: [
-          {
-            blog: "https://techblog.woowahan.com/",
-            github: "https://github.com/joansdev"
-          }
-        ]
+          "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
+        googleAccount: "joans.dev@gmail.com"
       },
       options: [
         { optionCode: "1", name: "프론트엔드" },
@@ -201,35 +222,68 @@ export default {
         { optionCode: "12", name: "데이터사이언스" }
       ],
       selectedOptionList: [],
+      optionList: [],
 
-      stacks: [
-        {
-          stackCode: "1",
-          label: "프론트엔드",
-          options: ["Javascript", "TypeScript", "React"]
-        },
-        {
-          stackCode: "2",
-          label: "백엔드",
-          options: ["Java", "Spring", "Node.js"]
-        },
-        {
-          stackCode: "3",
-          label: "모바일",
-          options: ["Flutter", "Swift", "Kotlin"]
-        },
-        {
-          stackCode: "4",
-          label: "기타",
-          options: ["AWS", "Kubernetes", "Docker"]
-        }
+      // stacks: [
+      //   {
+      //     stackCode: "1",
+      //     label: "프론트엔드",
+      //     options: ["Javascript", "TypeScript", "React"]
+      //   },
+      //   {
+      //     stackCode: "2",
+      //     label: "백엔드",
+      //     options: ["Java", "Spring", "Node.js"]
+      //   },
+      //   {
+      //     stackCode: "3",
+      //     label: "모바일",
+      //     options: ["Flutter", "Swift", "Kotlin"]
+      //   },
+      //   {
+      //     stackCode: "4",
+      //     label: "기타",
+      //     options: ["AWS", "Kubernetes", "Docker"]
+      //   }
+      // ],
+      partList: [
+        { partCode: "01", partName: "프론트엔드" },
+        { partCode: "02", partName: "백엔드" },
+        { partCode: "03", partName: "모바일" },
+        { partCode: "04", partName: "기타" }
       ],
+      stacks: [
+        { partCode: "01", stackCode: "1", stackName: "Javascript" },
+        { partCode: "01", stackCode: "2", stackName: "TypeScript" },
+        { partCode: "01", stackCode: "3", stackName: "React" },
+        { partCode: "02", stackCode: "1", stackName: "Java" },
+        { partCode: "02", stackCode: "2", stackName: "Spring" },
+        { partCode: "02", stackCode: "3", stackName: "Node.js" },
+        { partCode: "03", stackCode: "1", stackName: "Flutter" },
+        { partCode: "03", stackCode: "2", stackName: "Swift" },
+        { partCode: "03", stackCode: "3", stackName: "Kotlin" },
+        { partCode: "04", stackCode: "1", stackName: "AWS" },
+        { partCode: "04", stackCode: "2", stackName: "Kubernetes" },
+        { partCode: "04", stackCode: "3", stackName: "Docker" }
+      ],
+      selectedPart: "",
       selectedStackList: [],
-      selectedStackOption: [],
+      stackList: [],
 
-      siteName: "",
-      siteLink: "",
-      siteList: []
+      // siteList: [
+      //   "GitHub",
+      //   "https://github.com/joansdev",
+      //   "Naver",
+      //   "https://www.naver.com/"
+      // ]
+      siteList: [
+        { name: "GitHub", href: "https://github.com/joansdev" },
+        { name: "Naver", href: "https://www.naver.com/" },
+        { name: "Bootstrap", href: "https://getbootstrap.kr/" }
+      ],
+      infoStatus: true,
+      editStatus: false,
+      buttonStatus: "저장"
     };
   },
   setup() {},
@@ -237,12 +291,9 @@ export default {
   mounted() {},
   unmounted() {},
   methods: {
-    changeNickname() {
-      this.user.nickname = prompt("변경할 닉네임을 입력하세요.");
-    },
     addStack() {
-      this.selectedStackOption = this.stacks.filter(
-        (option) => option.stackCode === this.selectedStackList
+      this.selectedStackList = this.stacks.filter(
+        (stack) => stack.partCode === this.selectedPart
       );
     }
   }
@@ -250,87 +301,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: grid;
-  grid-gap: 10px;
-  height: 100vh;
-  grid-template-columns: 250px 100%;
-  grid-template-rows: 300px 1fr 150px 1fr;
-  grid-template-areas:
-    "tap info info"
-    "blank category category"
-    "blank category category"
-    "blank category category"
-    "blank category category";
-}
-.tap {
-  grid-area: tap;
-}
-.info {
-  grid-area: info;
-}
-.blank {
-  grid-area: blank;
-}
-.category {
-  grid-area: category;
-}
-
-.container > div:nth-child(1) {
-  padding: 20px;
-  border: 1px solid #000;
-  display: grid;
-  border-radius: 3%;
-}
-.container > div:nth-child(2) {
-  padding: 20px;
-  border: 1px solid #000;
-  display: grid;
-  text-align: left;
-}
-.container > div:nth-child(3) {
-  padding: 20px;
-
-  display: grid;
-}
-.container > div:nth-child(4) {
-  padding: 20px;
-  border: 1px solid #000;
-  display: grid;
-  font-weight: bold;
-  text-align: left;
-  font-size: 20px;
-}
-
-.container > div:nth-child(4) > div > span {
-  padding: 20px;
-}
-
-.under {
-  padding: 20px;
-}
-
-#padding {
-  padding: 20px;
-}
-
-.info1 {
-  position: relative;
-  left: 20px;
-}
-
-.info2 {
-  position: relative;
-  left: 70px;
-}
-
-::placeholder {
-  color: gray;
-  opacity: 0.7;
-}
-
 #link {
-  text-decoration: none;
-  font-weight: bold;
+  text-decoration-line: none;
 }
 </style>
