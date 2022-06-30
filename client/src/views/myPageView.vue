@@ -137,7 +137,7 @@
                   :href="siteList[2 * index + 1]"
                   v-for="(site, index) in siteList"
                   :key="site">
-                  {{ siteList[index * 2] }}.</a
+                  {{ siteList[index * 2] }}</a
                 > -->
                 <a
                   class="m-1 mt-0"
